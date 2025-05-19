@@ -78,7 +78,7 @@ public class Main {
 
             DataPacket fetchedData = null;
             try {
-                fetchedData = getDataPacket(from, to, extraAttributes);
+                fetchedData = getDataPacket(new Link(from, to, extraAttributes));
             } catch (UserDeclinedException e) {
                 System.out.println("Возвращаемся к началу программы");
                 continue;
@@ -116,6 +116,7 @@ public class Main {
                 System.out.println("Ошибка записи данных в БД. Пожалуйста, перепроверьте данные имя пользователя и пароля. текущие значения:");
                 connection.showAbout();
                 System.out.println("Убедитесь, что база данных запущена. Если вы используете Docker, то запустите сначала run-Docker");
+                break;
             }
             if (System.getProperty("DontAsk") != null || listener.askYesOrNo("Хотите загрузить еще данные?")) {
                 continue;
@@ -125,8 +126,7 @@ public class Main {
         }
     }
 
-    private static DataPacket getDataPacket(Attribute from, Attribute to, Attribute[] extra) throws UserDeclinedException, IOException, NoRecordsFoundException, WrongPageSizeParam {
-        Link link = new Link(from, to, extra);
+    private static DataPacket getDataPacket(Link link) throws UserDeclinedException, IOException, NoRecordsFoundException, WrongPageSizeParam {
         DataFetcher fetcher = new DataFetcher();
         DataPacket fetchedData = fetcher.fetch(link);
         return fetchedData;
